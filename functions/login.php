@@ -2,33 +2,36 @@
 session_start();
 
 require_once '../class/Connection.php';
+require_once '../class/Auth.php';
 
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    header("Location: ./success.php");
+// if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+//     header("Location: ../success.php");
+//     exit;
+// }
+
+$db = Connection::getInstance();
+$auth = new Auth($db);
+
+if (isset($_POST['email']) && isset($_POST['password'])) {
+    if ($auth->login($_POST['email'], $_POST['password'])) {
+        header("Location: ../success.php");
+        exit;
+    } else {
+        echo 'Invalid username or password.';
+    }
+}
+
+// if ($auth->isLoggedIn()) {
+//     echo 'User is logged in.';
+// }else {
+//     echo 'User is not logged in.';
+// }
+
+if (isset($_POST['logout'])) {
+    $auth->logout();
+    header("Location: ../index.php");
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
-    $password = $_POST["password"];
 
-    $connection = new Connection();
-    $conn = $connection->getConnection();
-
-    $sql = "SELECT id, email, password FROM users WHERE email = :email";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['logged_in'] = true;
-        $_SESSION['user_id'] = $user['id'];
-        header("Location: ./success.php");
-        exit;
-    } else {
-        header("Location: ../index.php?error=1");
-        exit;
-    }
-}
 ?>

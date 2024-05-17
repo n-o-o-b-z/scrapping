@@ -30,18 +30,20 @@
 
 
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scraped Links</title>
+    <title>Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Scraped Links</h1>
-    <div id="links-container">
+
+    <?php
+        include('includes/nav.html');
+    ?>
+    <div id="links-container" class="mt-16 pl-4">
         <?php
         $url = 'https://auto.suzuki.com.ph/';
 
@@ -60,8 +62,10 @@
         $links = $dom->getElementsByTagName('a');
 
         foreach ($links as $link) {
-            echo "<a href='" . $link->getAttribute('href') . "'>" . $link->nodeValue . "</a><br>";
+            echo "<a href='" .$url.$link->getAttribute('href') . "'>" . $link->nodeValue . "</a><br>";
         }
+
+        var_dump($_SESSION['logged_in']);
         ?>
     </div>
 </body>
