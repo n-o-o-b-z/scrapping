@@ -48,21 +48,31 @@
         include('includes/nav.html');
     ?>
     <div id="links-container" class="mt-16 pl-4">
-        <?php
-            
-            
-            $client = new Client();
-            $crawler = $client->request('GET', 'https://auto.suzuki.com.ph/');
-            $crawler->filter('.homeSuzukiCard')->each(function ($node) {
-                // echo $node->text() . "\n";
-                // echo $node->filter('.homeSuzukiCard__details--info h3')->text();
-            });
-            echo "<pre>";
-            print_r($crawler); // var_dump($data);
-            echo "</pre>";
+        <table class="min-w-full bg-white border border-gray-200">
+            <thead>
+                <tr class="w-full bg-gray-100">
+                    <th class="py-2 px-4 border-b border-gray-200 text-left">Image</th>
+                    <th class="py-2 px-4 border-b border-gray-200 text-left">Title</th>
+                    <th class="py-2 px-4 border-b border-gray-200 text-left">Price</th>
+                    <th class="py-2 px-4 border-b border-gray-200 text-left">Action</th>
 
-            
-        ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    $client = new Client();
+                    $crawler = $client->request('GET', 'https://books.toscrape.com/');
+                    $crawler->filter('.product_pod')->each(function ($node) {
+                        echo '<tr>';
+                        echo '<td class="py-2 px-4 border-b border-gray-200"><img src="https://books.toscrape.com/'.$node->filter('a img')->attr('src').'"></td>';
+                        echo '<td class="py-2 px-4 border-b border-gray-200">'.$node->filter('.image_container img')->attr('alt').'</td>';
+                        echo '<td class="py-2 px-4 border-b border-gray-200">'.$node->filter('.price_color')->text().'</td>';
+                        echo '</tr>';
+                    });
+                ?>
+
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
