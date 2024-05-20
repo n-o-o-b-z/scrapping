@@ -1,6 +1,13 @@
 <?php
 
+session_start();
+
 require_once '../class/Connection.php';
+require_once '../class/Auth.php';
+
+$db = Connection::getInstance();
+$auth = new Auth($db);
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $firstname = $_POST["firstname"];
@@ -29,20 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($errors)) {
-        $connection = new Connection();
-        $conn = $connection->getConnection();
-        $sql = "INSERT INTO users (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)";
-        $stmt = $conn->prepare($sql);
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt->bindParam(':first_name', $firstname);
-        $stmt->bindParam(':last_name', $lastname);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $hashed_password);
-        $stmt->execute();
-
-        $connection->closeConnection();
-        header("Location: ../success.php");
-        exit;
+        $auth->register($_POST["firstname"], $_POST["lastname"], $_POST["email"], $_POST["password"]);
     } else {
         foreach ($errors as $error) {
             echo "$error<br>";

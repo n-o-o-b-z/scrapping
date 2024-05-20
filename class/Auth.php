@@ -54,4 +54,27 @@ class Auth
 
         $this->db = null;
     }
+
+
+    public function register($first_name, $last_name, $email, $password)
+    {
+
+        if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
+            throw new Exception('All fields are required.');
+        }
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $sql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)';
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':first_name', $first_name);
+        $stmt->bindParam(':last_name', $last_name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $hashed_password);
+
+        if ($stmt->execute()) {
+            echo "Created successfully. Click <a href='../index.php'>here</a> to login.";
+        } else {
+            echo "Error: " . $stmt->errorInfo()[2];
+        }
+    }
 }
