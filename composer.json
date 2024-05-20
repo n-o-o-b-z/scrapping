@@ -1,0 +1,12 @@
+{
+    "name": "n-o-o-b-z/web_scrapping",
+    "description": "A brief description of your project",
+    "require": {
+        "fabpot/goutte": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "YourNamespace\\": "src/"
+        }
+    }
+}
