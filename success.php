@@ -1,6 +1,10 @@
 <?php
     session_start();
 
+    require 'vendor/autoload.php';
+
+    use Goutte\Client;
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         header("Location: index.html");
         exit;
@@ -9,7 +13,7 @@
     // $url = 'https://auto.suzuki.com.ph/';
 
     // $options = [
-    //     'http' => [
+    //     'http' => [web scraping
     //         'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
     //     ]
     // ];
@@ -45,27 +49,19 @@
     ?>
     <div id="links-container" class="mt-16 pl-4">
         <?php
-        $url = 'https://auto.suzuki.com.ph/';
+            
+            
+            $client = new Client();
+            $crawler = $client->request('GET', 'https://auto.suzuki.com.ph/');
+            $crawler->filter('.homeSuzukiCard')->each(function ($node) {
+                // echo $node->text() . "\n";
+                // echo $node->filter('.homeSuzukiCard__details--info h3')->text();
+            });
+            echo "<pre>";
+            print_r($crawler); // var_dump($data);
+            echo "</pre>";
 
-        $options = [
-            'http' => [
-                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
-            ]
-        ];
-        $context = stream_context_create($options);
-
-        $html = file_get_contents($url, false, $context);
-
-        $dom = new DOMDocument();
-        @$dom->loadHTML($html);
-
-        $links = $dom->getElementsByTagName('a');
-
-        foreach ($links as $link) {
-            echo "<a href='" .$url.$link->getAttribute('href') . "'>" . $link->nodeValue . "</a><br>";
-        }
-
-        var_dump($_SESSION['logged_in']);
+            
         ?>
     </div>
 </body>
